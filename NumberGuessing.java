@@ -1,5 +1,5 @@
 import java.util.*;
-class Main {
+class NumberGuessing {
     public static void main(String[] args) {
         Random rand=new Random();
         int randNumber=rand.nextInt(100)+1;
@@ -30,3 +30,6 @@ class Main {
         
     }
 }
+
+
+//Code by Monica
