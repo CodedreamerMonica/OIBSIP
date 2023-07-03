@@ -1,0 +1,147 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public class ATMInterface {
+    private static double balance = 1000; //Minimum Balance
+    private static List<String> transactionHistory = new ArrayList<>();
+    private static String username;
+    private static char[] pin;
+
+    public static void main(String[] args) {
+        // Set the username and PIN in advance
+        System.out.println("**********    Welcome to the ATM!    **********");
+        setUsername("Monica");
+        setPin("1111");
+
+        boolean quit = false;
+        boolean loggedIn = false;
+        while (!quit) {
+            if (loggedIn) {
+                displayMenu();
+                int choice = Integer.parseInt(System.console().readLine("Enter your choice: "));
+
+                switch (choice) {
+                    case 1:
+                        showTransactionHistory();
+                        break;
+                    case 2:
+                        double withdrawAmount = Double.parseDouble(System.console().readLine("Enter the amount to withdraw: "));
+                        withdraw(withdrawAmount);
+                        break;
+                    case 3:
+                        double depositAmount = Double.parseDouble(System.console().readLine("Enter the amount to deposit: "));
+                        deposit(depositAmount);
+                        break;
+                    case 4:
+                        double transferAmount = Double.parseDouble(System.console().readLine("Enter the amount to transfer: "));
+                        String recipientAccount = System.console().readLine("Enter the recipient's account number: ");
+                        transfer(transferAmount, recipientAccount);
+                        break;
+                    case 5:
+                        loggedIn = false;
+                        break;
+                    default:
+                        System.out.println("Invalid choice. Please try again.");
+                }
+            } else {
+                String inputUsername = System.console().readLine("Enter your username: ");
+
+                if (!isNewUser(inputUsername)) {
+                    char[] inputPin = System.console().readPassword("Enter your PIN: ");
+
+                    if (validateCredentials(inputUsername, inputPin)) {
+                        Arrays.fill(inputPin, ' '); // Clear the PIN from memory
+                        loggedIn = true;
+                        System.out.println("Login successful!\n");
+                    } else {
+                        System.out.println("Invalid username or PIN. Please try again.\n");
+                    }
+                } else {
+                    System.out.println("Invalid username. Please try again.\n");
+                }
+            }
+
+            if (!loggedIn) {
+                System.out.println("Thank you for using the ATM. Goodbye!");
+                quit = true;
+            }
+        }
+    }
+
+    private static void displayMenu() {
+        System.out.println("1. Transaction History");
+        System.out.println("2. Withdraw");
+        System.out.println("3. Deposit");
+        System.out.println("4. Transfer");
+        System.out.println("5. Quit");
+    }
+
+    private static void setUsername(String inputname) {
+        username = inputname;
+    }
+
+    private static void setPin(String inputPin) {
+        pin = inputPin.toCharArray();
+    }
+
+    private static boolean validateCredentials(String inputname, char[] inputPin) {
+        return username.equals(inputname) && Arrays.equals(pin, inputPin);
+    }
+
+    private static boolean isNewUser(String inputname) {
+        return !username.equals(inputname);
+    }
+
+    private static void showTransactionHistory() {
+        System.out.println("\nTransaction History");
+        for (String transaction : transactionHistory) {
+            System.out.println(transaction);
+        }
+    }
+
+    private static void withdraw(double amount) {
+    if (amount > 0) {
+        if (balance - amount >= 1000) {
+            balance -= amount;
+            String transaction = "Withdraw: ₹" + amount;
+            transactionHistory.add(transaction);
+            transaction = "Minimum Balance: ₹" + (balance - 1000);
+            transactionHistory.add(transaction);
+            System.out.println("Successfully withdrew ₹" + amount);
+            System.out.println("Current Balance: ₹" + balance);
+        } else {
+            System.out.println("Insufficient funds. Minimum balance of ₹1000 should be maintained.");
+        }
+    } else {
+        System.out.println("Invalid amount.");
+    }
+}
+
+
+
+    private static void deposit(double amount) {
+        if (amount > 0) {
+            balance += amount;
+            String transaction = "Deposit: ₹" + amount;
+            transactionHistory.add(transaction);
+            System.out.println("Successfully deposited ₹" + amount);
+            System.out.println("Current Balance: ₹" + balance);
+        } else {
+            System.out.println("Invalid amount.");
+        }
+    }
+
+    private static void transfer(double amount, String recipientAccount) {
+        if (amount > 0 && balance >= amount) {
+            balance -= amount;
+            String transaction = "Transfer: ₹" + amount + " to account " + recipientAccount;
+            transactionHistory.add(transaction);
+            System.out.println("Successfully transferred ₹" + amount + " to account " + recipientAccount);
+            System.out.println("Current Balance: ₹" + balance);
+        } else {
+            System.out.println("Insufficient funds or invalid amount.");
+        }
+    }
+}
+//Code by Monica
