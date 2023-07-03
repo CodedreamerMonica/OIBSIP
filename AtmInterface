@@ -1,0 +1,104 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class Main {
+    private static double balance = 0;
+    private static ArrayList<String> transactionHistory = new ArrayList<>();
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        boolean quit = false;
+        while (!quit) {
+            displayMenu();
+            System.out.print("Enter your choice: ");
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline character
+
+            switch (choice) {
+                case 1:
+                    showTransactionHistory();
+                    break;
+                case 2:
+                    System.out.print("Enter the amount to withdraw: ");
+                    double withdrawAmount = scanner.nextDouble();
+                    scanner.nextLine(); // Consume newline character
+                    withdraw(withdrawAmount);
+                    break;
+                case 3:
+                    System.out.print("Enter the amount to deposit: ");
+                    double depositAmount = scanner.nextDouble();
+                    scanner.nextLine(); // Consume newline character
+                    deposit(depositAmount);
+                    break;
+                case 4:
+                    System.out.print("Enter the amount to transfer: ");
+                    double transferAmount = scanner.nextDouble();
+                    scanner.nextLine(); // Consume newline character
+                    System.out.print("Enter the recipient's account number: ");
+                    String recipientAccount = scanner.nextLine();
+                    transfer(transferAmount, recipientAccount);
+                    break;
+                case 5:
+                    quit = true;
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        }
+
+        System.out.println("Thank you for using the ATM. Goodbye!");
+    }
+
+    private static void displayMenu() {
+        System.out.println("\nATM MENU");
+        System.out.println("1. Transaction History");
+        System.out.println("2. Withdraw");
+        System.out.println("3. Deposit");
+        System.out.println("4. Transfer");
+        System.out.println("5. Quit");
+    }
+
+    private static void showTransactionHistory() {
+        System.out.println("\nTRANSACTION HISTORY");
+        for (String transaction : transactionHistory) {
+            System.out.println(transaction);
+        }
+    }
+
+    private static void withdraw(double amount) {
+        if (amount > 0 && balance >= amount) {
+            balance -= amount;
+            String transaction = "Withdraw: $" + amount;
+            transactionHistory.add(transaction);
+            System.out.println("Successfully withdrew $" + amount);
+            System.out.println("Current Balance: $" + balance);
+        } else {
+            System.out.println("Insufficient funds or invalid amount.");
+        }
+    }
+
+    private static void deposit(double amount) {
+        if (amount > 0) {
+            balance += amount;
+            String transaction = "Deposit: $" + amount;
+            transactionHistory.add(transaction);
+            System.out.println("Successfully deposited $" + amount);
+            System.out.println("Current Balance: $" + balance);
+        } else {
+            System.out.println("Invalid amount.");
+        }
+    }
+
+    private static void transfer(double amount, String recipientAccount) {
+        if (amount > 0 && balance >= amount) {
+            balance -= amount;
+            String transaction = "Transfer: $" + amount + " to account " + recipientAccount;
+            transactionHistory.add(transaction);
+            System.out.println("Successfully transferred $" + amount + " to account " + recipientAccount);
+            System.out.println("Current Balance: $" + balance);
+        } else {
+            System.out.println("Insufficient funds or invalid amount.");
+        }
+    }
+}
